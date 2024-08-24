@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATM MACHINE</title>
+</head>
+
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+<body>
+  <style>
+ body {
+    background-color: #2c3e50;
+    font-family: 'Verdana', sans-serif;
+    color: #ecf0f1;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#box, #pin, #withdrawal_section, #actype, #widthrawl_amount {
+    background-color: #34495e;
+    border-radius: 8px;
+
+    padding:5em;
+    font-family: 'Roboto';
+    max-width: 400px;
+    text-transform: capitalize;
+    margin: 20px;
+    border: 1px solid #e6e4e4 ;
+    box-shadow:12px 10px 2px rgba(0, 0, 0, 0.5);
+}
+
+label {
+    font-size: 14px;
+    color: #ecf0f1;
+    display: block;
+    margin-bottom: 5px;
+}
+
+input[type="number"],
+input[type="password"] {
+    width: 100%;
+    padding:12px;
+    margin: 12px 0;
+    border:1px dashed #95a5a6;
+    border-radius: 5px;
+    background-color: #34495e;
+    color: #ecf0f1;
+    font-size: 16px;
+    box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.5);
+}
+
+button {
+    width: 80%;
+    padding: 12px;
+    border-radius: 10px;
+    margin: 10px 25px;
+    background-color: #27ae60;
+    border: none;
+
+    color: #ffffff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #2ecc71;
+}
+
+#verification {
+    font-weight: bold;
+text-align: center;
+    margin-top: 40px;
+}
+
+#file {
+    width: 100%;
+    margin-top: 10px;
+    height: 8px;
+    background-color: #34495e;
+}
+
+progress[value] {
+    background-color: #e74c3c;
+}
+
+#result {
+    color: #e74c3c;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;
+}
+
+h2 {
+    color: #ecf0f1;
+    font-size: 18px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+ol {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+ol li {
+    margin-bottom: 10px;
+}
+
+input[type="radio"] + label,
+input[type="checkbox"] + label {
+    color: #ecf0f1;
+    font-weight: 500;
+    cursor: pointer;
+}
+ 
+
+
+  </style>
+
+
+
+   
+    <div id="box">
+        <label>enter your 16 digit card No</label><br>
+        <input type="number" id="card_number"><br>
+        <label>enter your cvv</label><br>
+        <input type="number" id="card_cvv"><br>
+        <button id="CARD" onclick="search()">ENTER</button><br>
+
+        <label id="verification">CARD VERIFICATION:</label><br>
+        <progress id="file" value="0" max="100"></progress>
+
+    </div>
+    <label id="result" style="display: block;text-align: center; margin-top:50px;"></label>
+
+    <div id="pin" style="text-align: center;display: none;">
+        <label>ENTER YOUR FOUR DIGIT PIN</label><br>
+        <input type="password" id="pin_input" maxlength="4"><br>
+        <button id="card-pin" onclick="myCard.save()">Submit</button>
+        <h2 id="available_balance">Balance:-</h2>
+    </div>
+    <div id="withdrawal_section" style="text-align: center; margin-top: 20px;display: none;">
+
+        <ol>
+            <input type="checkbox" id="withdrawal">
+            <label>Withdrawal</label><br>
+            <button id="click" onclick="myCard.save2()">SUBMIT</button>
+        </ol>
+    </div>
+
+
+    <div id="actype" style="display:none; text-align: center;">
+        <li><input type="radio" name="1" id="ac">SAVING</li>
+        <li><input type="radio" name="1" id="ac2">CURRENT</li>
+        <li><input type="radio" name="1" id="ac3">FIXED </li>
+        <button id="acsubmit" onclick="myCard.save3()">submit</button>
+    </div>
+    <div id="widthrawl_amount" style="display: none;text-align: center;">
+        <label id="amount_label">Enter Your Amount In 100's</label><BR></BR>
+        <input type="number" id="amount" maxlength="5">
+        <button id="select" onclick="myCard.save4()">Enter</button>
+    </div>
+<script>
+    function search() {
+      let card_number = document.getElementById('card_number').value;
+      let result = document.getElementById('result');
+      let card_cvv = document.getElementById('card_cvv').value;
+      let verification = document.getElementById('verification');
+      let file = document.getElementById('file');
+      let box = document.getElementById('box');
+      result.innerHTML = '';
+      if (card_number.length === 16 && card_cvv.length === 3) {
+          if (card_number[0] == 2 || card_number[0] == 5) {
+              verification.innerHTML = `MASTERCARD`;
+          }
+          else if (card_number[0] == 4) {
+              verification.innerHTML = `VisaCard`;
+          }
+          if (card_number[0] == 3) {
+              verification.innerHTML = `American Express`;
+          }
+  
+         
+          file.value = 100;
+          box.style.display = 'none'; 
+          pin.style.display = 'block';
+      } else {
+          result.innerHTML = 'Not A Valid Card Try Again';
+          pin.style.display = 'none';
+        
+      }
+  }
+  
+  class Card {
+      constructor() {
+          this.random = 20000;
+      }
+  
+      save() {
+          let pin = document.getElementById('pin_input').value;
+          let available_balance = document.getElementById('available_balance');
+          let withdrawal_section = document.getElementById('withdrawal_section');
+          let pin_section = document.getElementById('pin');
+  
+          if (isNaN(pin)) {
+              available_balance.innerHTML = 'Invalid PIN';
+          } else if (pin.length === 4) {
+              available_balance.innerHTML = `Balance: Rs ${this.random}`;
+              pin_section.style.display = 'none';
+              withdrawal_section.style.display = 'block'; 
+          }
+      }
+  
+      save2() {
+          let account_type = document.getElementById('actype');
+          let withdrawal_section = document.getElementById('withdrawal_section');
+  
+          withdrawal_section.style.display = 'none'; 
+          account_type.style.display = 'block'; 
+      }
+  
+      save3() {
+          let ac = document.getElementById('ac');
+          let ac2 = document.getElementById('ac2');
+          let ac3 = document.getElementById('ac3');
+          let withdrawal_amount = document.getElementById('widthrawl_amount');
+          let account_type = document.getElementById('actype');
+  
+          if (ac.checked == true || ac2.checked == true || ac3.checked == true) {
+              account_type.style.display = 'none'; 
+              withdrawal_amount.style.display = 'block';
+          } else {
+              alert('Please select an account type');
+          }
+      }
+  
+      save4() {
+          let random = 20000;
+          let amount = parseFloat(document.getElementById('amount').value);
+          let amount_label = document.getElementById('amount_label');
+  
+          if (amount < random) {
+              let remaining_amount = random - amount;
+              amount_label.innerHTML = `Your remaining amount is Rs ${remaining_amount}`;
+          } else if (amount > random) {
+              amount_label.innerHTML = 'Insufficient funds';
+          } else {
+              amount_label.innerHTML = 'Exact amount, no remaining balance';
+          }
+      }
+  }
+  
+  const myCard = new Card();
+</script>  
+   
+</body>
+
+</html>
